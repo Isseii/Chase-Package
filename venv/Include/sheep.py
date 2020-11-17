@@ -1,5 +1,13 @@
 import random
-import copy
+import copy as cp
+from enum import Enum
+
+
+class Direction(Enum):
+    LEFT = 0
+    RIGHT = 1
+    DOWN = 2
+    UP = 3
 
 
 class Sheep:
@@ -10,38 +18,28 @@ class Sheep:
         self.xPos = xPos
         self.yPos = yPos
 
-    def step(self, direction):
-        holder = float()
-        if direction == 0:
-            holder = self.xPos - self.sheep_move_dist
-        elif direction == 1:
-            holder = self.xPos + self.sheep_move_dist
-        elif direction == 2:
-            holder = self.yPos - self.sheep_move_dist
-        elif direction == 3:
-            holder = self.yPos + self.sheep_move_dist
-        return holder
-
     def move(self):
         direction = random.randrange(0, 4)
-        self.step(direction)
-        loop = True
-        while loop:
-            if abs(self.step(direction)) <= 10.0:
-                loop = False
-            else:
-                direction = random.randrange(0, 4)
+        direction = Direction(direction)
 
-        if direction == 0:
-            self.xPos -= self.sheep_move_dist
-        elif direction == 1:
-            self.xPos += self.sheep_move_dist
-        elif direction == 2:
-            self.yPos -= self.sheep_move_dist
-        elif direction == 3:
-            self.yPos += self.sheep_move_dist
-
-        return True
+        while True:
+            x, y = self.__step(direction)
+            if abs(x) <= self.init_pos_limit and abs(y) <= self.init_pos_limit:
+                self.xPos = x
+                self.yPos = y
+                break
 
     def position(self):
-        return [copy.copy(self.xPos), copy.copy(self.yPos)]
+        return [cp.copy(self.xPos), cp.copy(self.yPos)]
+
+    def __step(self, direction):
+        x, y = self.xPos, self.yPos
+        if direction == Direction.LEFT:
+            x = self.xPos - self.sheep_move_dist
+        elif direction == Direction.RIGHT:
+            x = self.xPos + self.sheep_move_dist
+        elif direction == Direction.DOWN:
+            y = self.yPos - self.sheep_move_dist
+        elif direction == Direction.UP:
+            y = self.yPos + self.sheep_move_dist
+        return x, y
