@@ -1,17 +1,17 @@
 import random
 import copy
 
-class Sheep:
-    init_pos_limit = (float)
-    sheep_move_dist = (float)
 
-    def __init__(self,xPos,yPos):
+class Sheep:
+    init_pos_limit = float()
+    sheep_move_dist = float()
+
+    def __init__(self, xPos, yPos):
         self.xPos = xPos
         self.yPos = yPos
 
-
     def step(self, direction):
-        holder = (float)
+        holder = float()
         if direction == 0:
             holder = self.xPos - self.sheep_move_dist
         elif direction == 1:
@@ -26,8 +26,8 @@ class Sheep:
         direction = random.randrange(0, 4)
         self.step(direction)
         loop = True
-        while(loop == True):
-            if(abs(self.step(direction)) <= 10.0):
+        while loop:
+            if abs(self.step(direction)) <= 10.0:
                 loop = False
             else:
                 direction = random.randrange(0, 4)
@@ -43,6 +43,5 @@ class Sheep:
 
         return True
 
-
     def position(self):
-        return [copy.copy(self.xPos),copy.copy(self.yPos)]
+        return [copy.copy(self.xPos), copy.copy(self.yPos)]
