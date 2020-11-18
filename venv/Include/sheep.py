@@ -1,13 +1,6 @@
 import random
 import copy as cp
-from enum import Enum
-
-
-class Direction(Enum):
-    LEFT = 0
-    RIGHT = 1
-    DOWN = 2
-    UP = 3
+from direction import Direction
 
 
 class Sheep:
@@ -19,10 +12,10 @@ class Sheep:
         self.yPos = yPos
 
     def move(self):
-        direction = random.randrange(0, 4)
-        direction = Direction(direction)
-
         while True:
+            direction = random.randrange(0, 4)
+            direction = Direction(direction)
+
             x, y = self.__step(direction)
             if abs(x) <= self.init_pos_limit and abs(y) <= self.init_pos_limit:
                 self.xPos = x
