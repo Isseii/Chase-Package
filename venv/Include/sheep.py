@@ -6,13 +6,14 @@ from direction import Direction
 class Sheep:
     init_pos_limit = float()
     sheep_move_dist = float()
+    alive = True
 
     def __init__(self, xPos, yPos):
         self.xPos = xPos
         self.yPos = yPos
 
     def move(self):
-        while True:
+        while self.alive:
             direction = random.randrange(0, 4)
             direction = Direction(direction)
 
@@ -24,6 +25,14 @@ class Sheep:
 
     def position(self):
         return [cp.copy(self.xPos), cp.copy(self.yPos)]
+
+    def isAlive(self):
+        return self.alive
+
+    def kill(self):
+        self.yPos = None
+        self.xPos = None
+        self.alive = False
 
     def __step(self, direction):
         x, y = self.xPos, self.yPos

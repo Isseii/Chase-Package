@@ -5,66 +5,68 @@ from direction import Direction
 def distance(x1, y1, x2, y2):
     return math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2)
 
+def length(x,y):
+    return math.sqrt(x * x  + y * y)
 
 class Wolf:
     init_pos_limit = float()
     wolf_move_dist = float()
+    alive_sheeps = 0
+    killed_sheep = -1
+
 
     def __init__(self):
         self.xPos = 0.0
         self.yPos = 0.0
 
     def move(self, sheep: list):
-        csx, csy = self.__get_closest_sheep_xy(sheep)
-        # print("closest_sheep=[" + str(csx) + "," + str(csy) + "]") # DEBUG
+        self.alive_sheeps = len(sheep)
+        if self.__get_closest_sheep_xy(sheep) == -1:
+            return
+        closestSheep, closest_distance = self.__get_closest_sheep_xy(sheep)
+        index = sheep.index(closestSheep)
+        self.xPos, self.yPos, wolf_distance = self.__go_towards( closestSheep, index)
 
-        # TODO: __check_for_prey and handle if there is any sheep to go bye bye :*
 
-        direction = self.__go_towards(csx, csy)
-        x, y = self.__step(direction)
-        self.xPos = x
-        self.yPos = y
-
-    def __check_for_prey(self, csx, csy):
-        if distance(self.xPos, self.yPos, csx, csy) < self.wolf_move_dist:
-            return True
-        return False
-
-    def __step(self, direction):
-        x, y = self.xPos, self.yPos
-        if direction == Direction.LEFT:
-            x = self.xPos - self.wolf_move_dist
-        elif direction == Direction.RIGHT:
-            x = self.xPos + self.wolf_move_dist
-        elif direction == Direction.DOWN:
-            y = self.yPos - self.wolf_move_dist
-        elif direction == Direction.UP:
-            y = self.yPos + self.wolf_move_dist
-        return x, y
-
-    def __go_towards(self, csx, csy):
+    def __go_towards(self, sheep, index):
+        csx = sheep.xPos
+        csy = sheep.yPos
         dist = distance(self.xPos, self.yPos, csx, csy)
-        x, y = self.xPos - csx, self.yPos - csy
-        x, y = x/dist, y/dist
-        # print(str(x) + ", " + str(y)) # DEBUG
-        if abs(x) > abs(y):
-            if x > 0:
-                return Direction.RIGHT
-            else:
-                return Direction.LEFT
+        x = float()
+        y = float()
+        if dist <= self.wolf_move_dist:
+            x, y = csx, csy
+            self.alive_sheeps -= 1
+            self.killed_sheep = index
+            sheep.kill()
         else:
-            if y > 0:
-                return Direction.UP
-            else:
-                return Direction.DOWN
+            directX = csx - self.xPos
+            directY = csy - self.yPos
+            directX, directY = directX/dist, directY/dist
+            x = self.xPos + directX
+            y = self.yPos + directY
+        dist = distance(x, y, csx, csy)
+        return x, y, dist
 
-    def __get_closest_sheep_xy(self, sheep: list):
-        closest = sheep[0]
+    def __get_closest_sheep_xy(self, sheeps: list):
+        index = -1
+        self.alive_sheeps = 0
+        self.killed_sheep = -1
+        for s in sheeps:
+            if s.isAlive():
+                self.alive_sheeps += 1
+                index = sheeps.index(s)
+        if self.alive_sheeps == 0:
+            return -1
+        closest = sheeps[index]
+        closest_distance = 0
 
-        for s in sheep:
-            closest_distance = distance(self.xPos, self.yPos, closest.xPos, closest.yPos)
-            sheep_distance = distance(self.xPos, self.yPos, s.xPos, s.yPos)
-            if closest_distance > sheep_distance:
-                closest = s
 
-        return closest.xPos, closest.yPos
+        for s in sheeps:
+            if s.isAlive():
+                closest_distance = distance(self.xPos, self.yPos, closest.xPos, closest.yPos)
+                sheep_distance = distance(self.xPos, self.yPos, s.xPos, s.yPos)
+                if closest_distance > sheep_distance:
+                    closest = s
+                    closest_distance = sheep_distance
+        return closest, closest_distance
