@@ -14,10 +14,11 @@ class Sheep:
         self.logging = logging
         pos = "Starting position X: ", self.xPos, "Y: ", self.yPos,
         self.logging.info(pos)
-        log = (self.__str__(), " starting position  X :", self.xPos, " Y :", self.yPos)
-        self.logging.debug(log)
+        self.logging.debug(
+            "Sheep constructor called with argument(" + self.__str__() + "," + xPos.__str__() + "," + yPos.__str__() + "," + logging.__str__() + ")")
 
     def move(self):
+        self.logging.debug("move called with argument(" + self.__str__() + ")")
         while self.alive:
             direction = random.randrange(0, 4)
             direction = Direction(direction)
@@ -34,12 +35,12 @@ class Sheep:
         return [cp.copy(self.xPos), cp.copy(self.yPos)]
 
     def isAlive(self):
-        log = (self.__str__(), " living  : ", self.alive)
+        log = ("isAlive called with argument (" + self.__str__()+  " ) returns ("+ self.alive.__str__() + " )")
         self.logging.debug(log)
         return self.alive
 
-    def kill(self,str):
-        log = (str, " killed ",self.__str__())
+    def kill(self):
+        log = ("kill called with argument (" + self.__str__() +")")
         self.logging.debug(log)
         self.yPos = None
         self.xPos = None

@@ -20,8 +20,9 @@ class Wolf:
         self.xPos = 0.0
         self.yPos = 0.0
         self.logging = logging
-        log = (self.__str__(), " starting position  X :", round(self.xPos,3), " Y :", round(self.yPos, 3))
-        self.logging.debug(log)
+
+        self.logging.debug(
+            "Wolf constructor called with argument(" + self.__str__() + "," +  logging.__str__() + ")")
 
     def move(self, sheep: list):
         self.alive_sheeps = len(sheep)
@@ -30,8 +31,7 @@ class Wolf:
             return
         index = sheep.index(closestSheep)
         self.xPos, self.yPos, wolf_distance = self.__go_towards( closestSheep, index)
-        log = (self.__str__(), "  position  X :", round(self.xPos,3), " Y :", round(self.yPos,3))
-        self.logging.debug(log)
+        self.logging.debug("move called with argument("+ self.__str__() +"," + sheep.__str__() +")")
 
 
 
@@ -45,7 +45,7 @@ class Wolf:
             x, y = csx, csy
             self.alive_sheeps -= 1
             self.killed_sheep = index
-            sheep.kill(self.__str__())
+            sheep.kill()
         else:
             directX = csx - self.xPos
             directY = csy - self.yPos
@@ -53,6 +53,9 @@ class Wolf:
             x = self.xPos + directX
             y = self.yPos + directY
         dist = distance(x, y, csx, csy)
+        self.logging.debug(
+            "__go_towards called with argument(" + self.__str__() +"," + sheep.__str__() + "," + index.__str__() +
+            "), returned (" + x.__str__() + "," + y.__str__() + "," + dist.__str__() )
         return x, y, dist
 
     def __get_closest_sheep_xy(self, sheeps: list):
@@ -76,7 +79,8 @@ class Wolf:
                 closest = s
                 closest_distance = sheep_distance
 
-        log = ("Distance to closest ",closest.__str__()," from ", self.__str__(), " is " , round(closest_distance,3))
-        self.logging.debug(log)
+        self.logging.debug(
+            "__get_closest_sheep_xy called with argument(" + self.__str__() + "," + sheeps.__str__() +
+            "), returned (" +  closest.__str__() + "," + closest_distance.__str__() )
 
         return closest, closest_distance

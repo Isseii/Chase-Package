@@ -48,6 +48,10 @@ def __setup():
                         type=check_positive, metavar='NUM')
     parser.add_argument('-w', '--wait', action='store_true', help="Wait for Enter key after each round!")
     args = parser.parse_args()
+    if args.directory:
+        directory = args.directory
+        if not os.path.exists(directory):
+            os.makedirs(directory)
     if args.log_lvl:
         with open('chase.log', 'w'):
             pass
@@ -63,19 +67,19 @@ def __setup():
             lvl = logging.CRITICAL
         else:
             raise ValueError("Invalid log level!")
-        logging.basicConfig(level=lvl, filename="chase.log")
+        path = os.path.join(directory, 'chase.log')
+        logging.basicConfig(level=lvl, filename=path)
         logging.debug("debug")
     if args.conf:
         if __configuration(args.conf) != -1:
             Sheep.sheep_move_dist, Sheep.init_pos_limit, Wolf.wolf_move_dist = __configuration(args.conf)
-    if args.directory:
-        directory = args.directory
     if args.rounds:
         rounds = args.rounds
     if args.sheep_number:
         sheep_number = args.sheep_number
     if args.wait:
         wait = args.wait
+    logging.debug("__setup() called ")
     __simulation(rounds, sheep_number, wait, directory)
 
 
@@ -83,17 +87,16 @@ def __configuration(conf_file):
     if not Path(conf_file).is_file():
         logging.error("Configuration file with path " + conf_file + " doesn't exist!")
         return -1
-
     config = configparser.ConfigParser()
     config.read(conf_file)
     smove, ini, wmove = float(config.get('Movement', 'SheepMoveDist')), float(
          config.get('Terrain', 'InitPosLimit')), float(config.get('Movement', 'WolfMoveDist'))
     if (smove > 0 and ini > 0 and wmove > 0):
+        logging.debug(
+        "_configuration called with argument(" + conf_file.__str__() + " ), returned (" + smove.__str__() + "," +  ini.__str__() + "," +   wmove.__str__() +  ")")
         return smove, ini, wmove
     logging.error("Negative value passed to configuration file!")
     raise ("Incorrect value in configuration file!")
-
-
 
 
 
@@ -106,13 +109,19 @@ def __toJson(sheep_arr, wolf, data, i):
     data['lea'].append({'round_no': i,
                         'wolf_pos': pos,
                         'sheep_pos': sheeps_holder})
+    logging.debug("__toJson called with argument("+ sheep_arr.__str__() + "," + wolf.__str__() + ","+ data.__str__() + "," + i.__str__() +" ), returned ("+ data.__str__() +")")
     return data
 
 
 def __toCsv(sheeps,directory):
     path = os.path.join(directory ,'alive.csv')
-    if os.path.getsize(path) > 0:
-        logging.warning("CSV file was not empty!")
+    try:
+        if os.path.getsize(path) > 0:
+            logging.warning("Json file was not empty!")
+    except FileNotFoundError:
+        logging.debug("Creating CSV file!")
+
+    logging.debug("__toCsv called with argument("+ sheeps.__str__() + "," + directory +" )")
     with open(path, 'w+', newline='') as csvfile:
         writer = csv.writer(csvfile, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
         writer.writerow(['Round', 'Sheeps_Alive'])
@@ -128,10 +137,14 @@ def __generate_sheeps(no):
         posx = (random.randrange(-(2 * Sheep.init_pos_limit), (2 * Sheep.init_pos_limit) + 1, 1)) / 2
         posy = (random.randrange(-(2 * Sheep.init_pos_limit), (2 * Sheep.init_pos_limit) + 1, 1)) / 2
         sheep_arr.append(Sheep(posx, posy, logging))
+    logging.debug(
+        "__generate_sheeps called with argument(" + no.__str__() +  " ), returned (" + sheep_arr.__str__() + ")")
     return sheep_arr
 
 
 def __simulation(rounds, sheep_number, wait, directory):
+    logging.debug(
+        " __simulation called with argument(" + rounds.__str__() + "," +  sheep_number.__str__() + "," +  wait.__str__() + "," +   directory.__str__() + ")")
     log = ("Round number ", 0)
     logging.info(log)
     sheep_arr = __generate_sheeps(sheep_number)
@@ -176,11 +189,11 @@ def __simulation(rounds, sheep_number, wait, directory):
             break
 
     path = os.path.join(directory, 'pos.json')
-    if not os.path.exists(directory):
-        os.makedirs(directory)
-    elif   os.path.getsize(path) > 0:
-        logging.warning("Json file was not empty!")
-
+    try:
+        if os.path.getsize(path) > 0:
+            logging.warning("Json file was not empty!")
+    except FileNotFoundError:
+        logging.debug("Creating Json file!")
 
     __toCsv(sheeps_alive, directory)
     with open(path, 'w+') as outfile:
