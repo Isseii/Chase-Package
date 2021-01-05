@@ -1,5 +1,5 @@
 import math
-from direction import Direction
+from chase.direction import Direction
 
 
 def distance(x1, y1, x2, y2):

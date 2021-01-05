@@ -1,6 +1,6 @@
 import random
 import copy as cp
-from direction import Direction
+from chase.direction import Direction
 
 
 class Sheep:

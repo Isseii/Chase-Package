@@ -7,8 +7,8 @@ import os
 import configparser
 from argparse import RawTextHelpFormatter
 from pathlib import Path
-from sheep import Sheep
-from wolf import Wolf
+from chase.sheep import Sheep
+from chase.wolf import Wolf
 
 
 def check_positive(value):
