@@ -11,8 +11,8 @@ def length(x, y):
 
 
 class Wolf:
-    init_pos_limit = float()
-    wolf_move_dist = float()
+    init_pos_limit = 10.0
+    wolf_move_dist =  1.0
     alive_sheeps = 0
     killed_sheep = -1
 
@@ -20,9 +20,8 @@ class Wolf:
         self.xPos = 0.0
         self.yPos = 0.0
         self.logging = logging
-
         self.logging.debug(
-            "Wolf constructor called with argument(" + self.__str__() + "," +  logging.__str__() + ")")
+            "Wolf constructor called with argument(" + str(self) + "," +  str(logging) + ")")
 
     def move(self, sheep: list):
         self.alive_sheeps = len(sheep)
@@ -31,7 +30,7 @@ class Wolf:
             return
         index = sheep.index(closestSheep)
         self.xPos, self.yPos, wolf_distance = self.__go_towards( closestSheep, index)
-        self.logging.debug("move called with argument("+ self.__str__() +"," + sheep.__str__() +")")
+        self.logging.debug("move called with argument("+ str(self) +"," + str(sheep) +")")
 
 
 
@@ -54,8 +53,8 @@ class Wolf:
             y = self.yPos + directY
         dist = distance(x, y, csx, csy)
         self.logging.debug(
-            "__go_towards called with argument(" + self.__str__() +"," + sheep.__str__() + "," + index.__str__() +
-            "), returned (" + x.__str__() + "," + y.__str__() + "," + dist.__str__() )
+            "__go_towards called with argument(" + str(self) +"," + str(sheep) + "," + str(index) +
+            "), returned (" + str(x) + "," + str(y) + "," + str(dist) )
         return x, y, dist
 
     def __get_closest_sheep_xy(self, sheeps: list):
@@ -64,7 +63,7 @@ class Wolf:
         self.killed_sheep = -1
         alive_sheeps = []
         for s in sheeps:
-            if s.isAlive():
+            if s.is_alive():
                 self.alive_sheeps += 1
                 index = sheeps.index(s)
                 alive_sheeps.append(s)
@@ -80,7 +79,7 @@ class Wolf:
                 closest_distance = sheep_distance
 
         self.logging.debug(
-            "__get_closest_sheep_xy called with argument(" + self.__str__() + "," + sheeps.__str__() +
-            "), returned (" +  closest.__str__() + "," + closest_distance.__str__() )
+            "__get_closest_sheep_xy called with argument(" + str(self) + "," + str(sheeps) +
+            "), returned (" +  str(closest) + "," + str(closest_distance) )
 
         return closest, closest_distance

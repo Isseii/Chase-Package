@@ -4,8 +4,8 @@ from chase.direction import Direction
 
 
 class Sheep:
-    init_pos_limit = float()
-    sheep_move_dist = float()
+    init_pos_limit = 10.0
+    sheep_move_dist = 0.5
     alive = True
 
     def __init__(self, xPos, yPos, logging):
@@ -15,10 +15,10 @@ class Sheep:
         pos = "Starting position X: ", self.xPos, "Y: ", self.yPos,
         self.logging.info(pos)
         self.logging.debug(
-            "Sheep constructor called with argument(" + self.__str__() + "," + xPos.__str__() + "," + yPos.__str__() + "," + logging.__str__() + ")")
+            "Sheep constructor called with argument(" + str(self) + "," + str(xPos) + "," + str(yPos) + "," + str(logging) + ")")
 
     def move(self):
-        self.logging.debug("move called with argument(" + self.__str__() + ")")
+        self.logging.debug("move called with argument(" + str(self) + ")")
         while self.alive:
             direction = random.randrange(0, 4)
             direction = Direction(direction)
@@ -26,7 +26,7 @@ class Sheep:
             if abs(x) <= self.init_pos_limit and abs(y) <= self.init_pos_limit:
                 self.xPos = x
                 self.yPos = y
-                log = (self.__str__(), " position  X :", x, " Y :", y)
+                log = (str(self), " position  X :", x, " Y :", y)
                 self.logging.debug(log)
                 break
 
@@ -34,13 +34,13 @@ class Sheep:
     def position(self):
         return [cp.copy(self.xPos), cp.copy(self.yPos)]
 
-    def isAlive(self):
-        log = ("isAlive called with argument (" + self.__str__()+  " ) returns ("+ self.alive.__str__() + " )")
+    def is_alive(self):
+        log = ("isAlive called with argument (" + str(self)+  " ) returns ("+ str(self.alive) + " )")
         self.logging.debug(log)
         return self.alive
 
     def kill(self):
-        log = ("kill called with argument (" + self.__str__() +")")
+        log = ("kill called with argument (" + str(self) +")")
         self.logging.debug(log)
         self.yPos = None
         self.xPos = None
