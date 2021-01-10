@@ -75,7 +75,7 @@ def __setup():
 
 def __check_positive(value):
     ivalue = int(value)
-    logging.debug("check_positive(" +  value.__str__() +  ") called, returned," + ivalue.__str__())
+    logging.debug("check_positive(" +  str(value) +  ") called, returned," + str(ivalue))
     if ivalue <= 0:
         raise argparse.ArgumentTypeError("%s value must be positive" % value)
     return ivalue
